@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Control de Turnos Mejorado | Checkin{% endblock %}
+
+{% block content %}
+
+<div class="topbar-wrapper" style="z-index: 5;">
+    <div class="topbar" data-dropdown="dropdown" >
+      <div class="topbar-inner">
+        <div class="container">
+          <h3><a href="#">CTM</a></h3>
+          <ul class="nav">
+            <li><a href="/">Checkin</a></li>
+            <li><a href="/log">Log</a></li>
+            <li class="active"><a href="/schedule/">Schedule</a></li>
+          </ul>
+        </div>
+      </div><!-- /topbar-inner -->
+    </div><!-- /topbar -->
+  </div><!-- /topbar-wrapper -->
+
+<div class="container">
+    <table class="zebra-striped" id="schedule">
+        <thead>
+            <tr>
+                <th>Block</th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+                <th>Saturday</th>
+            </tr>
+        </thead>
+        {% for b in blocks %}
+        <tr>
+            <td class="block-name">
+                {{b.name}}
+            </td>
+            {% for per_day in b.schedule %}
+            <td class="size-{{per_day|length}} hideable">
+                <ul>
+                    {% for employee in per_day %}
+                    <li>{{employee}}</li>
+                    {% endfor %}
+                </ul>
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+
+    </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Control de Turnos Mejorado | Log{% endblock %}
+{% block content %}
+
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/jquery.quicksearch.js"></script>
+
+<script type="text/javascript">
+  $(function () {
+    $('input#id_search').quicksearch('table#logs tr:not(:has(th))');
+  });
+</script>
+
+
+<div class="topbar-wrapper" style="z-index: 5;">
+    <div class="topbar" data-dropdown="dropdown" >
+      <div class="topbar-inner">
+        <div class="container">
+          <h3><a href="#">CTM</a></h3>
+
+          <ul class="nav">
+            <li><a href="/">Checkin</a></li>
+            <li class="active"><a href="/log">Log</a></li>
+            <li><a href="/schedule/">Schedule</a></li>
+          </ul>
+          <form class="pull-left">
+            <input type="text" id="id_search" placeholder="Search" />
+          </form>
+        </div>
+      </div><!-- /topbar-inner -->
+    </div><!-- /topbar -->
+  </div><!-- /topbar-wrapper -->
+
+<div class="container">
+  <table class="zebra-striped" id="logs">
+      {% for l in Log %}
+      {% ifchanged l.weeknumber %}
+      <tr>
+      <th> Week of the {{l.date.date}}</th>
+      <th>  Day </th><th> Block </th> <th> Employee </th><th> Status</th>
+    </tr>
+      {% endifchanged %}
+      <tr>
+          <td/>
+          <td>{{l.shiftemployees.shift.wkday}}</td>
+          <td>{{l.shiftemployees.shift.block}}</td>
+          <td>{{l.shiftemployees.employee}}</td>
+          <td>
+            {% if l.status == "Absent" %}  
+            <span class="label important">{{l.status}}</span>
+            {% else %}
+                {% if l.status == "Late" or l.status == "Late + No Logout"%}
+                  <span class="label warning">{{l.status}}</span>
+                {% else %}
+                  <span class="label success">{{l.status}}</span>
+                {% endif %}
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+  </table>
+</div>
+{% endblock %}
+

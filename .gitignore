@@ -1,0 +1,4 @@
+syntax:glob
+*.sqlite
+*.pyc
+checkin/*.pyc

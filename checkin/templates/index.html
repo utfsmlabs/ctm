@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Control de Turnos Mejorado | Checkin{% endblock %}
+{% block extrahead %}
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/clock.js"></script>
+<script src="/static/js/index.js"></script>
+{% endblock %}
+{% block content %}
+
+
+<div class="topbar-wrapper" style="z-index: 5;">
+    <div class="topbar" data-dropdown="dropdown" >
+      <div class="topbar-inner">
+        <div class="container">
+          <h3><a href="#">CTM</a></h3>
+          <ul class="nav">
+            <li class="active"><a href="/">Checkin</a></li>
+            <li><a href="/log">Log</a></li>
+            <li><a href="/schedule/">Schedule</a></li>
+          </ul>
+        </div>
+      </div><!-- /topbar-inner -->
+    </div><!-- /topbar -->
+  </div><!-- /topbar-wrapper -->
+
+
+
+<div class="container">
+    <div id="clock" class="span3">
+        <canvas id="clock_canvas" width="170" height="170">
+            <div class="alert-message info">Oh snap! your browser doesn't seem to have canvas support. If it did, there would be a clock right here.</div>
+        </canvas>
+    </div>
+    <div id="shifts" class="span12">
+        <div id=timedata>
+          <h1>{{ Shift }}</h1>
+        </div>
+
+        <table class="zebra-striped">
+          <div id=EmployeeData>
+            {% for se in ShiftEmployees %}
+            <tr><td>
+            {{ se.employee.name }}
+                {%if Logs%}
+                    {% for log in Logs %}
+                        {% if log.shiftemployees.employee = se.employee %}
+                            {% if not log.logout_at %}
+                            <span class="label success">Logged In</span>
+                                {% if logout_time %}
+                                    <form action="/uncheck/" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="shft" value="{{Shift.id}}" />
+                                        <input type="hidden" name="emp" value="{{se.employee.id}}" />
+                                        <input type="submit" value="Log Out" />
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                            <span class="label success">Logged Out</span>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+                {% for logless in Logless %}
+                    {% if logless.employee = se.employee %}
+                    <span class="label warning">not logged in</span>
+                        <form action="/check/" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="shft" value="{{Shift.id}}" />
+                          <input type="hidden" name="emp" value="{{se.employee.id}}" />
+                          <input type="submit" value="log in" />
+                        </form>
+                    {% endif %}
+                {%endfor%}
+            </td></tr>
+                {%endfor%}
+          </div>
+        </table>
+    </div>
+</div>
+    {% endblock %}
